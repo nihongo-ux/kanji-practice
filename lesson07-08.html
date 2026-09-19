@@ -1,0 +1,109 @@
+<!doctype html><html lang='ja'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>みんなの日本語 漢字練習 試作</title>
+<style>
+:root{--bg:#fff9f7;--card:#fff;--ink:#29252a;--pink:#ef7096;--line:#e9dfe2;--soft:#fff0f4}*{box-sizing:border-box}body{margin:0;font-family:"UD Digi Kyokasho N-R","BIZ UDPGothic","Yu Kyokasho","Hiragino Kaku Gothic ProN",sans-serif;background:var(--bg);color:var(--ink)}header{max-width:1000px;margin:auto;padding:24px 18px 8px}h1{font-size:clamp(22px,4vw,34px);margin:0 0 5px}.sub{color:#756b70}.tabs{display:flex;gap:8px;margin:18px 0}.tab,button{border:1.5px solid #29252a;background:#fff;border-radius:10px;padding:9px 14px;font-weight:700;cursor:pointer}.tab.active,.primary{background:var(--pink);color:white;border-color:var(--pink)}main{max-width:1000px;margin:auto;padding:0 18px 40px}.progress{height:7px;background:#eee3e6;border-radius:99px;overflow:hidden;margin-bottom:18px}.bar{height:100%;background:var(--pink);width:6.25%}.grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-bottom:18px}.kbtn{font-family:"UD Digi Kyokasho N-R","BIZ UDPGothic","Yu Kyokasho",sans-serif;font-size:25px;padding:10px 2px;background:white}.kbtn.active{outline:3px solid #f5b0c4}.panels{display:grid;grid-template-columns:1fr 1fr;gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 4px 18px #3b26300b}.label{font-weight:800;margin-bottom:8px}.kanji{font-family:"UD Digi Kyokasho N-R","BIZ UDPGothic","Yu Kyokasho",sans-serif;font-size:112px;text-align:center;line-height:1.15}.meta{text-align:center;line-height:1.8}.pt{font-size:14px;color:#9a5269}.strokeBox,.drawBox{height:285px;border:1.5px solid #777;border-radius:14px;position:relative;background:linear-gradient(#0000 49.7%,#ddd 50%,#0000 50.3%),linear-gradient(90deg,#0000 49.7%,#ddd 50%,#0000 50.3%);overflow:hidden}.strokeChar{font-family:"UD Digi Kyokasho N-R","BIZ UDPGothic","Yu Kyokasho",sans-serif;font-size:180px;position:absolute;inset:0;display:grid;place-items:center;color:#333}.strokeChar.anim{animation:reveal 1.6s ease both}@keyframes reveal{0%{opacity:.08;transform:scale(.88)}35%{opacity:.35}100%{opacity:1;transform:scale(1)}}canvas{width:100%;height:100%;touch-action:none}.controls{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}.practice{display:none}.question{font-size:22px;text-align:center;margin:20px}.answers{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.feedback{text-align:center;font-weight:800;min-height:30px;margin:12px}.note{font-size:12px;color:#82767b;margin-top:12px}@media(max-width:720px){.grid{grid-template-columns:repeat(4,1fr)}.panels{grid-template-columns:1fr}.answers{grid-template-columns:repeat(2,1fr)}}
+</style><script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+</head><body><header><h1>漢字れんしゅう <span style='color:#ef7096'>7・8課</span></h1><div class='sub'>みんなの日本語｜試作版 v3（16字）</div><div class='tabs'><button class='tab active' id='learnTab'>Learn</button><button class='tab' id='practiceTab'>Practice</button></div></header><main><div class='progress'><div class='bar' id='bar'></div></div><div class='grid' id='grid'></div>
+<section id='learn'><div class='panels'><div class='card'><div class='label'>Flashcard</div><div class='kanji' id='kanji'>人</div><div class='meta'><b id='reading'>ひと・ジン</b><br><span id='word'>アメリカ人（アメリカじん）</span><br><span class='pt' id='pt'>pessoa</span></div></div><div class='card'><div class='label'>かきじゅん</div>
+<div class='strokeBox' id='strokeBoxReal'>
+  <div id='writerTarget' style='width:100%;height:100%;display:flex;align-items:center;justify-content:center'></div>
+</div>
+<div class='controls'><button id='replay'>▶ もういちど</button></div>
+<div class='note' id='strokeNote'>※1かくずつ、ほんとうの かきじゅんで うごきます。インターネットせつぞくが ひつようです。</div></div><div class='card'><div class='label'>じぶんで かこう</div><div class='drawBox'><canvas id='free'></canvas></div><div class='controls'><button data-clear='free'>けす</button><button class='primary' id='next'>つぎ →</button></div></div></div></section>
+<section id='practice' class='practice'><div class='card'><div class='label'>Practice</div><div class='question' id='question'></div><div class='answers' id='answers'></div><div class='feedback' id='feedback'></div><div class='controls'><button id='newQ'>Próximo →</button></div></div></section></main>
+<script>
+const data=[
+["母", "かあ・ハハ", "お母さん（おかあさん）／わたしの母（はは）", "mãe"],
+["父", "とう・チチ", "お父さん（おとうさん）／わたしの父（ちち）", "pai"],
+["物", "もの・ブツ", "食べ物（たべもの）／荷物（にもつ）", "coisa / objeto"],
+["朝", "あさ", "朝（あさ）ごはんを食べます。", "manhã"],
+["昼", "ひる", "昼（ひる）休み", "meio-dia / dia"],
+["夜", "よる", "夜（よる）、本を読みます。", "noite"],
+["晩", "バン", "今晩（こんばん）／晩（ばん）ごはんを食べます。", "noite"],
+["町", "まち", "大きい町（まち）", "cidade / bairro"],
+["山", "やま・サン", "富士山（ふじさん）／日本の山（やま）", "montanha"],
+["白", "しろ（い）", "白（しろ）い かばん", "branco"],
+["赤", "あか（い）", "赤（あか）い ネクタイ", "vermelho"],
+["青", "あお（い）", "青（あお）い くつ", "azul"],
+["黒", "くろ（い）", "黒（くろ）い かさ", "preto"],
+["安", "やす（い）", "安（やす）い パソコン", "barato"],
+["高", "たか（い）", "高（たか）い 山", "alto / caro"],
+["小", "ちい（さい）", "小（ちい）さい ラジオ", "pequeno"]
+];
+let idx=0;const $=id=>document.getElementById(id);const grid=$('grid');
+data.forEach((d,i)=>{let b=document.createElement('button');b.className='kbtn'+(i===0?' active':'');b.textContent=d[0];b.onclick=()=>select(i);grid.appendChild(b)});
+function select(i){idx=i;let d=data[i];$('kanji').textContent=d[0]; renderStrokeOrder(d[0]);$('reading').textContent=d[1];$('word').textContent=d[2];$('pt').textContent=d[3];[...grid.children].forEach((b,j)=>b.classList.toggle('active',j===i));$('bar').style.width=((i+1)/data.length*100)+'%';clearCanvas('free')}
+$('next').onclick=()=>select((idx+1)%data.length);
+let writer=null;
+function jpLoader(char, onComplete, onError){
+  fetch('https://cdn.jsdelivr.net/npm/hanzi-writer-data-jp@latest/' + encodeURIComponent(char) + '.json')
+    .then(r=>{if(!r.ok) throw new Error('data'); return r.json()})
+    .then(onComplete).catch(onError);
+}
+function renderStrokeOrder(char){
+  const target=$('writerTarget');
+  const note=$('strokeNote');
+  target.innerHTML='';
+  writer=null;
+  note.textContent='※1かくずつ、ほんとうの かきじゅんで表示します。インターネットせつぞくが ひつようです。';
+  if(typeof HanziWriter==='undefined'){
+    target.innerHTML="<div style='padding:30px;text-align:center'>かきじゅんデータを よみこめませんでした。<br>インターネットせつぞくを かくにんしてください。</div>";
+    return;
+  }
+  writer=HanziWriter.create('writerTarget',char,{
+    width:260,height:260,padding:25,
+    showOutline:true,showCharacter:false,
+    strokeAnimationSpeed:1,
+    delayBetweenStrokes:650,
+    outlineColor:'#eadfe2',
+    strokeColor:'#29252a',
+    charDataLoader:jpLoader,
+    onLoadCharDataSuccess:function(){ setTimeout(()=>writer.animateCharacter(),250); },
+    onLoadCharDataError:function(){
+      target.innerHTML="<div style='padding:30px;text-align:center'>「"+char+"」のデータを よみこめませんでした。<br>インターネットせつぞくを かくにんしてください。</div>";
+    }
+  });
+}
+$('replay').onclick=()=>{if(writer){writer.animateCharacter();}else{renderStrokeOrder(data[idx][0]);}};
+function setupCanvas(id){let c=$(id),ctx=c.getContext('2d'),drawing=false;function size(){let r=c.getBoundingClientRect(),old=document.createElement('canvas');old.width=c.width;old.height=c.height;old.getContext('2d').drawImage(c,0,0);c.width=r.width*devicePixelRatio;c.height=r.height*devicePixelRatio;ctx=c.getContext('2d');ctx.scale(devicePixelRatio,devicePixelRatio);ctx.lineWidth=7;ctx.lineCap='round';ctx.strokeStyle='#29252a'}size();addEventListener('resize',size);function p(e){let r=c.getBoundingClientRect(),q=e.touches?e.touches[0]:e;return [q.clientX-r.left,q.clientY-r.top]}function start(e){drawing=true;let [x,y]=p(e);ctx.beginPath();ctx.moveTo(x,y);e.preventDefault()}function move(e){if(!drawing)return;let [x,y]=p(e);ctx.lineTo(x,y);ctx.stroke();e.preventDefault()}function end(){drawing=false}c.addEventListener('pointerdown',start);c.addEventListener('pointermove',move);c.addEventListener('pointerup',end);c.addEventListener('pointerleave',end)}setupCanvas('free');
+function clearCanvas(id){let c=$(id),ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height)}document.querySelectorAll('[data-clear]').forEach(b=>b.onclick=()=>clearCanvas(b.dataset.clear));
+$('learnTab').onclick=()=>{$('grid').style.display='grid';$('learn').style.display='block';$('practice').style.display='none';$('learnTab').classList.add('active');$('practiceTab').classList.remove('active')};$('practiceTab').onclick=()=>{$('grid').style.display='none';$('learn').style.display='none';$('practice').style.display='block';$('practiceTab').classList.add('active');$('learnTab').classList.remove('active');makeQ()};
+const questions=[
+{q:"わたしの はは の「はは」は どのかんじですか？", a:"母", pt:"minha mãe"},
+{q:"わたしの ちち の「ちち」は どのかんじですか？", a:"父", pt:"meu pai"},
+{q:"たべもの の「もの」は どのかんじですか？", a:"物", pt:"comida"},
+{q:"あさごはん の「あさ」は どのかんじですか？", a:"朝", pt:"café da manhã"},
+{q:"ひるやすみ の「ひる」は どのかんじですか？", a:"昼", pt:"intervalo do almoço"},
+{q:"よる の「よる」は どのかんじですか？", a:"夜", pt:"noite"},
+{q:"こんばん の「ばん」は どのかんじですか？", a:"晩", pt:"esta noite"},
+{q:"おおきい まち の「まち」は どのかんじですか？", a:"町", pt:"cidade"},
+{q:"にほんの やま の「やま」は どのかんじですか？", a:"山", pt:"montanha"},
+{q:"しろい かばん の「しろ」は どのかんじですか？", a:"白", pt:"bolsa branca"},
+{q:"あかい ネクタイ の「あか」は どのかんじですか？", a:"赤", pt:"gravata vermelha"},
+{q:"あおい くつ の「あお」は どのかんじですか？", a:"青", pt:"sapatos azuis"},
+{q:"くろい かさ の「くろ」は どのかんじですか？", a:"黒", pt:"guarda-chuva preto"},
+{q:"やすい パソコン の「やす」は どのかんじですか？", a:"安", pt:"computador barato"},
+{q:"たかい やま の「たか」は どのかんじですか？", a:"高", pt:"montanha alta"},
+{q:"ちいさい ラジオ の「ちい」は どのかんじですか？", a:"小", pt:"rádio pequeno"}
+];
+let qOrder=[], qPos=0;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function resetQuestions(){qOrder=shuffle([...Array(questions.length).keys()]);qPos=0}
+function makeQ(){
+  if(qPos>=qOrder.length) resetQuestions();
+  const q=questions[qOrder[qPos++]];
+  const target=data.findIndex(d=>d[0]===q.a);
+  const opts=new Set([target]);
+  while(opts.size<4) opts.add(Math.floor(Math.random()*data.length));
+  $('question').innerHTML=`<b>${q.q}</b><br><span class='pt'>${q.pt}</span><br><span class='pt'>もんだい ${qPos} / 16</span>`;
+  $('answers').innerHTML='';
+  shuffle([...opts]).forEach(i=>{
+    const b=document.createElement('button'); b.className='kbtn'; b.textContent=data[i][0];
+    b.onclick=()=>{$('feedback').textContent=i===target?'✓ せいかい！':'もう一度 😊'};
+    $('answers').appendChild(b)
+  });
+  $('feedback').textContent='';
+}
+resetQuestions();
+$('newQ').onclick=makeQ;
+select(0);
+</script></body></html>
