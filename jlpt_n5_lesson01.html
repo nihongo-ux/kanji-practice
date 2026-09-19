@@ -1,0 +1,99 @@
+<!doctype html><html lang='ja'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>みんなの日本語 漢字練習 試作</title>
+<style>
+:root{--bg:#fff9f7;--card:#fff;--ink:#29252a;--pink:#ef7096;--line:#e9dfe2;--soft:#fff0f4}*{box-sizing:border-box}body{margin:0;font-family:"UD Digi Kyokasho N-R","BIZ UDPGothic","Yu Kyokasho","Hiragino Kaku Gothic ProN",sans-serif;background:var(--bg);color:var(--ink)}header{max-width:1000px;margin:auto;padding:24px 18px 8px}h1{font-size:clamp(22px,4vw,34px);margin:0 0 5px}.sub{color:#756b70}.tabs{display:flex;gap:8px;margin:18px 0}.tab,button{border:1.5px solid #29252a;background:#fff;border-radius:10px;padding:9px 14px;font-weight:700;cursor:pointer}.tab.active,.primary{background:var(--pink);color:white;border-color:var(--pink)}main{max-width:1000px;margin:auto;padding:0 18px 40px}.progress{height:7px;background:#eee3e6;border-radius:99px;overflow:hidden;margin-bottom:18px}.bar{height:100%;background:var(--pink);width:10%}.grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-bottom:18px}.kbtn{font-family:"UD Digi Kyokasho N-R","BIZ UDPGothic","Yu Kyokasho",sans-serif;font-size:25px;padding:10px 2px;background:white}.kbtn.active{outline:3px solid #f5b0c4}.panels{display:grid;grid-template-columns:1fr 1fr;gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 4px 18px #3b26300b}.label{font-weight:800;margin-bottom:8px}.kanji{font-family:"UD Digi Kyokasho N-R","BIZ UDPGothic","Yu Kyokasho",sans-serif;font-size:112px;text-align:center;line-height:1.15}.meta{text-align:center;line-height:1.8}.pt{font-size:14px;color:#9a5269}.strokeBox,.drawBox{height:285px;border:1.5px solid #777;border-radius:14px;position:relative;background:linear-gradient(#0000 49.7%,#ddd 50%,#0000 50.3%),linear-gradient(90deg,#0000 49.7%,#ddd 50%,#0000 50.3%);overflow:hidden}.strokeChar{font-family:"UD Digi Kyokasho N-R","BIZ UDPGothic","Yu Kyokasho",sans-serif;font-size:180px;position:absolute;inset:0;display:grid;place-items:center;color:#333}.strokeChar.anim{animation:reveal 1.6s ease both}@keyframes reveal{0%{opacity:.08;transform:scale(.88)}35%{opacity:.35}100%{opacity:1;transform:scale(1)}}canvas{width:100%;height:100%;touch-action:none}.controls{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}.practice{display:none}.question{font-size:22px;text-align:center;margin:20px}.answers{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.feedback{text-align:center;font-weight:800;min-height:30px;margin:12px}.note{font-size:12px;color:#82767b;margin-top:12px}@media(max-width:720px){.grid{grid-template-columns:repeat(4,1fr)}.panels{grid-template-columns:1fr}.answers{grid-template-columns:repeat(2,1fr)}}
+</style><script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+</head><body><header><h1>漢字れんしゅう <span style='color:#ef7096'>N5 Lesson 1</span></h1><div class='sub'>JLPT N5｜Lesson 1 絵からできた漢字1（10字）</div><div class='tabs'><button class='tab active' id='learnTab'>Learn</button><button class='tab' id='practiceTab'>Practice</button></div></header><main><div class='progress'><div class='bar' id='bar'></div></div><div class='grid' id='grid'></div>
+<section id='learn'><div class='panels'><div class='card'><div class='label'>Flashcard</div><div class='kanji' id='kanji'>人</div><div class='meta'><b id='reading'>ひと・ジン</b><br><span id='word'>アメリカ人（アメリカじん）</span><br><span class='pt' id='pt'>pessoa</span></div></div><div class='card'><div class='label'>かきじゅん</div>
+<div class='strokeBox' id='strokeBoxReal'>
+  <div id='writerTarget' style='width:100%;height:100%;display:flex;align-items:center;justify-content:center'></div>
+</div>
+<div class='controls'><button id='replay'>▶ もういちど</button></div>
+<div class='note' id='strokeNote'>※1かくずつ、ほんとうの かきじゅんで うごきます。インターネットせつぞくが ひつようです。</div></div><div class='card'><div class='label'>じぶんで かこう</div><div class='drawBox'><canvas id='free'></canvas></div><div class='controls'><button data-clear='free'>けす</button><button class='primary' id='next'>つぎ →</button></div></div></div></section>
+<section id='practice' class='practice'><div class='card'><div class='label'>Practice</div><div class='question' id='question'></div><div class='answers' id='answers'></div><div class='feedback' id='feedback'></div><div class='controls'><button id='newQ'>Próximo →</button></div></div></section></main>
+<script>
+const data=[
+['山','やま・サン','山（やま）／富士山（ふじさん）／登山（とざん）','montanha／Monte Fuji／escalada de montanha'],
+['川','かわ・セン','川（かわ）／山川さん（やまかわさん）／インダス川（インダスがわ）','rio／Sr.(a) Yamagawa／Rio Indo'],
+['田','た・デン','田んぼ（たんぼ）／山田さん（やまださん）／水田（すいでん）／油田（ゆでん）','arrozal／Sr.(a) Yamada／arrozal／campo de petróleo'],
+['日','ひ／び・ニチ／ニ／ジツ','日（ひ）／日曜日（にちようび）／日本（にほん）／休日（きゅうじつ）','Sol／domingo／Japão／feriado'],
+['月','つき・ゲツ／ガツ','月（つき）／月曜日（げつようび）／1月（いちがつ）／今月（こんげつ）','Lua／segunda-feira／janeiro／este mês'],
+['火','ひ・カ','火（ひ）／火曜日（かようび）／火山（かざん）／火事（かじ）','fogo／terça-feira／vulcão／incêndio'],
+['水','みず・スイ','水（みず）／水曜日（すいようび）／水田（すいでん）／水道（すいどう）','água／quarta-feira／arrozal／encanamento de água'],
+['木','き・モク','木（き）／木曜日（もくようび）','árvore／quinta-feira'],
+['金','かね・キン','お金（おかね）／金（きん）／金曜日（きんようび）','dinheiro／ouro／sexta-feira'],
+['土','つち・ド／ト','土（つち）／土曜日（どようび）／土地（とち）','terra／sábado／terreno']
+];
+let idx=0;const $=id=>document.getElementById(id);const grid=$('grid');
+data.forEach((d,i)=>{let b=document.createElement('button');b.className='kbtn'+(i===0?' active':'');b.textContent=d[0];b.onclick=()=>select(i);grid.appendChild(b)});
+function select(i){idx=i;let d=data[i];$('kanji').textContent=d[0]; renderStrokeOrder(d[0]);$('reading').textContent=d[1];$('word').textContent=d[2];$('pt').textContent=d[3];[...grid.children].forEach((b,j)=>b.classList.toggle('active',j===i));$('bar').style.width=((i+1)/data.length*100)+'%';clearCanvas('free')}
+$('next').onclick=()=>select((idx+1)%data.length);
+let writer=null;
+function jpLoader(char, onComplete, onError){
+  fetch('https://cdn.jsdelivr.net/npm/hanzi-writer-data-jp@latest/' + encodeURIComponent(char) + '.json')
+    .then(r=>{if(!r.ok) throw new Error('data'); return r.json()})
+    .then(onComplete).catch(onError);
+}
+const kanjiVGFiles={
+  "山":"05c71.svg",
+  "川":"05ddd.svg",
+  "田":"07530.svg",
+  "日":"065e5.svg",
+  "月":"06708.svg",
+  "火":"0706b.svg",
+  "水":"06c34.svg",
+  "木":"06728.svg",
+  "金":"091d1.svg",
+  "土":"0571f.svg"
+};
+async function renderKanjiVG(char){
+ const target=$('writerTarget'),note=$('strokeNote');writer=null;
+ note.innerHTML='※KanjiVGの日本語漢字データで、1かくずつ表示します。<br><span style="font-size:12px">KanjiVG © Ulrich Apel, CC BY-SA 3.0</span>';
+ try{
+  const r=await fetch('https://cdn.jsdelivr.net/gh/KanjiVG/kanjivg@master/kanji/'+kanjiVGFiles[char]);if(!r.ok)throw 0;
+  const doc=new DOMParser().parseFromString(await r.text(),'image/svg+xml');
+  const ps=[...doc.querySelectorAll('g[id*="StrokePaths"] path')];if(!ps.length)throw 0;
+  target.innerHTML='<svg viewBox="0 0 109 109" width="260" height="260"><g id="kg" fill="none" stroke="#eadfe2" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></g><g id="kl" fill="none" stroke="#29252a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></g></svg>';
+  const ns='http://www.w3.org/2000/svg',g=$('kg'),l=$('kl');
+  ps.forEach(p=>[g,l].forEach(x=>{const q=document.createElementNS(ns,'path');q.setAttribute('d',p.getAttribute('d'));x.appendChild(q);}));
+  let delay=250;[...l.querySelectorAll('path')].forEach(p=>{const n=p.getTotalLength();p.style.strokeDasharray=n;p.style.strokeDashoffset=n;p.style.transition='none';setTimeout(()=>{p.style.transition='stroke-dashoffset 650ms ease';p.style.strokeDashoffset='0';},delay);delay+=900;});
+ }catch(e){target.innerHTML="<div style='padding:30px;text-align:center'>かきじゅんを よみこめませんでした。</div>";}
+}
+function renderStrokeOrder(char){renderKanjiVG(char);}
+$('replay').onclick=()=>renderKanjiVG(data[idx][0]);
+function setupCanvas(id){let c=$(id),ctx=c.getContext('2d'),drawing=false;function size(){let r=c.getBoundingClientRect(),old=document.createElement('canvas');old.width=c.width;old.height=c.height;old.getContext('2d').drawImage(c,0,0);c.width=r.width*devicePixelRatio;c.height=r.height*devicePixelRatio;ctx=c.getContext('2d');ctx.scale(devicePixelRatio,devicePixelRatio);ctx.lineWidth=7;ctx.lineCap='round';ctx.strokeStyle='#29252a'}size();addEventListener('resize',size);function p(e){let r=c.getBoundingClientRect(),q=e.touches?e.touches[0]:e;return [q.clientX-r.left,q.clientY-r.top]}function start(e){drawing=true;let [x,y]=p(e);ctx.beginPath();ctx.moveTo(x,y);e.preventDefault()}function move(e){if(!drawing)return;let [x,y]=p(e);ctx.lineTo(x,y);ctx.stroke();e.preventDefault()}function end(){drawing=false}c.addEventListener('pointerdown',start);c.addEventListener('pointermove',move);c.addEventListener('pointerup',end);c.addEventListener('pointerleave',end)}setupCanvas('free');
+function clearCanvas(id){let c=$(id),ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height)}document.querySelectorAll('[data-clear]').forEach(b=>b.onclick=()=>clearCanvas(b.dataset.clear));
+$('learnTab').onclick=()=>{$('grid').style.display='grid';$('learn').style.display='block';$('practice').style.display='none';$('learnTab').classList.add('active');$('practiceTab').classList.remove('active')};$('practiceTab').onclick=()=>{$('grid').style.display='none';$('learn').style.display='none';$('practice').style.display='block';$('practiceTab').classList.add('active');$('learnTab').classList.remove('active');makeQ()};
+const questions=[
+{q:'「とざん」の「ざん」は どのかんじですか？',pt:'escalada de montanha',a:'山'},
+{q:'「インダスがわ」の「がわ」は どのかんじですか？',pt:'Rio Indo',a:'川'},
+{q:'「すいでん」の「でん」は どのかんじですか？',pt:'arrozal',a:'田'},
+{q:'「きゅうじつ」の「じつ」は どのかんじですか？',pt:'feriado',a:'日'},
+{q:'「こんげつ」の「げつ」は どのかんじですか？',pt:'este mês',a:'月'},
+{q:'「かじ」の「か」は どのかんじですか？',pt:'incêndio',a:'火'},
+{q:'「すいどう」の「すい」は どのかんじですか？',pt:'encanamento de água',a:'水'},
+{q:'「もくようび」の「もく」は どのかんじですか？',pt:'quinta-feira',a:'木'},
+{q:'「おかね」の「かね」は どのかんじですか？',pt:'dinheiro',a:'金'},
+{q:'「とち」の「と」は どのかんじですか？',pt:'terreno',a:'土'}
+];
+let qOrder=[], qPos=0;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function resetQuestions(){qOrder=shuffle([...Array(questions.length).keys()]);qPos=0}
+function makeQ(){
+  if(qPos>=qOrder.length) resetQuestions();
+  const q=questions[qOrder[qPos++]];
+  const target=data.findIndex(d=>d[0]===q.a);
+  const opts=new Set([target]);
+  while(opts.size<4) opts.add(Math.floor(Math.random()*data.length));
+  $('question').innerHTML=`<b>${q.q}</b><br><span class='pt'>${q.pt}</span><br><span class='pt'>もんだい ${qPos} / 10</span>`;
+  $('answers').innerHTML='';
+  shuffle([...opts]).forEach(i=>{
+    const b=document.createElement('button'); b.className='kbtn'; b.textContent=data[i][0];
+    b.onclick=()=>{$('feedback').textContent=i===target?'✓ せいかい！':'もう一度 😊'};
+    $('answers').appendChild(b)
+  });
+  $('feedback').textContent='';
+}
+resetQuestions();
+$('newQ').onclick=makeQ;
+select(0);
+</script></body></html>
