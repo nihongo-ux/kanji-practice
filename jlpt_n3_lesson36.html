@@ -28,15 +28,15 @@ canvas{display:block;width:220px;height:220px;border:1px solid var(--line);backg
 </div>
 <script>
 const data=[
- {k:'産',r:'う（まれる）・う（む）・うぶ・サン',ex:'姉の家に赤ちゃんが産（う）まれた。',pt:'produzir / nascer'},
- {k:'農',r:'ノウ',ex:'元気な産声が聞こえる。農業（のうぎょう）を学ぶ。',pt:'agricultura'},
+ {k:'産',r:'う（まれる）・う（む）・うぶ・サン',ex:'姉の家に赤ちゃんが産（う）まれた。出産（しゅっさん）。',pt:'produzir / nascer'},
+ {k:'農',r:'ノウ',ex:'農業（のうぎょう）を学ぶ。',pt:'agricultura'},
  {k:'貿',r:'ボウ',ex:'外国との貿易（ぼうえき）が盛んだ。',pt:'comércio exterior'},
- {k:'商',r:'あきな（う）・ショウ',ex:'今日はこの商店（しょうてん）は休みだった。',pt:'comércio / loja'},
+ {k:'商',r:'あきな（う）・ショウ',ex:'今日はこの商店（しょうてん）は休みだった。商売（しょうばい）。商店街（しょうてんがい）。',pt:'comércio / loja'},
  {k:'機',r:'はた・キ',ex:'機会（きかい）があったらまた会いましょう。',pt:'máquina / oportunidade'},
  {k:'械',r:'カイ',ex:'機械（きかい）で車の部品を作る。',pt:'máquina'},
- {k:'危',r:'あぶ（ない）・あや（うい）・あや（ぶむ）・キ',ex:'道がせまい上に交通量が多く危（あぶ）ない。',pt:'perigoso'},
+ {k:'危',r:'あぶ（ない）・あや（うい）・あや（ぶむ）・キ',ex:'道がせまい上に交通量が多く危（あぶ）ない。危険（きけん）。',pt:'perigoso'},
  {k:'険',r:'けわ（しい）・ケン',ex:'二人の間が険悪（けんあく）なふんいきになる。',pt:'íngreme / perigoso'},
- {k:'技',r:'わざ・ギ',ex:'じゅうどうの技があざやかに決まる。',pt:'técnica'},
+ {k:'技',r:'わざ・ギ',ex:'じゅうどうの技があざやかに決まる。技術（ぎじゅつ）。',pt:'técnica'},
  {k:'術',r:'ジュツ',ex:'柔道、剣道などの武術（ぶじゅつ）を受ける。',pt:'técnica / arte'}
 ];
 const vg={}; data.forEach(x=>vg[x.k]=x.k.codePointAt(0).toString(16).padStart(5,'0')+'.svg');

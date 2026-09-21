@@ -29,9 +29,9 @@ canvas{display:block;width:220px;height:220px;border:1px solid var(--line);backg
 <script>
 const data=[
  {k:'費',r:'つい（える）・つい（やす）・ヒ',ex:'予算は既に使ってしまった。費用（ひよう）を計算する。',pt:'despesa'},
- {k:'算',r:'サン',ex:'費用を計算（けいさん）する。',pt:'calcular'},
- {k:'供',r:'とも・そな（える）・キョウ・ク',ex:'おばに花を供（そな）える。',pt:'oferecer / fornecer'},
- {k:'税',r:'ゼイ',ex:'安定した食料の供給（きょうきゅう）をめざす。税金（ぜいきん）を払う。',pt:'imposto'}
+ {k:'算',r:'サン',ex:'費用を計算（けいさん）する。算数（さんすう）。',pt:'calcular'},
+ {k:'供',r:'とも・そな（える）・キョウ・ク',ex:'お墓（はか）に花を供（そな）える。',pt:'oferecer / fornecer'},
+ {k:'税',r:'ゼイ',ex:'税金（ぜいきん）を払う。',pt:'imposto'}
 ];
 const vg={}; data.forEach(x=>vg[x.k]=x.k.codePointAt(0).toString(16).padStart(5,'0')+'.svg');
 let idx=0,round=[],qi=0,answered=false;

@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JLPT N3 漢字｜Lesson 30</title>
+<title>JLPT N3 漢字｜Lesson 1</title>
 <style>
 :root{--bg:#f7f5fb;--card:#fff;--ink:#2f2b35;--muted:#6e6676;--accent:#76558f;--line:#ded8e6}
 *{box-sizing:border-box} body{margin:0;font-family:"Noto Sans JP","Yu Gothic",Meiryo,sans-serif;background:var(--bg);color:var(--ink)}
@@ -17,7 +17,7 @@ canvas{display:block;width:220px;height:220px;border:1px solid var(--line);backg
 @media(max-width:700px){.grid{grid-template-columns:repeat(5,1fr)}.learncols{grid-template-columns:1fr}.big{font-size:82px}}
 </style>
 </head><body><div class="wrap">
-<h1>JLPT N3 漢字｜Lesson 30</h1><div class="sub">仕・職・求・探・常・識・失・礼・労・員</div>
+<h1>JLPT N3 漢字｜Lesson 1</h1><div class="sub">起・寝・浴・湯・洗・濯・干・活・拾・捨</div>
 <div class="tabs"><button id="learnTab" class="tab active">Learn</button><button id="practiceTab" class="tab">Practice</button></div>
 <div id="grid" class="grid"></div>
 <section id="learn" class="card"><div class="learncols">
@@ -28,16 +28,16 @@ canvas{display:block;width:220px;height:220px;border:1px solid var(--line);backg
 </div>
 <script>
 const data=[
- {k:'仕',r:'つか（える）・シ・ジ',ex:'仕事（しごと）をします。／王様に仕（つか）えます。',pt:'servir / trabalho'},
- {k:'職',r:'ショク',ex:'職場（しょくば）は駅の近くです。／日本の会社に就職（しゅうしょく）しました。',pt:'profissão'},
- {k:'求',r:'もと（める）・キュウ',ex:'失業して、あらたに職を求（もと）める。',pt:'procurar / exigir'},
- {k:'探',r:'さぐ（る）・さが（す）・タン',ex:'求人広告を見て、仕事を探（さが）す。',pt:'procurar'},
- {k:'常',r:'つね・とこ・ジョウ',ex:'常（つね）に笑顔をたやさない。',pt:'sempre / normal'},
- {k:'識',r:'シキ',ex:'常識（じょうしき）を身につける。',pt:'conhecimento / consciência'},
- {k:'失',r:'うしな（う）・シツ',ex:'仕事で失敗（しっぱい）した。',pt:'perder / falhar'},
- {k:'礼',r:'レイ・ライ',ex:'お先に失礼（しつれい）します。',pt:'cortesia / saudação'},
- {k:'労',r:'ロウ',ex:'彼女は若いころから苦労（くろう）している。',pt:'trabalho / esforço'},
- {k:'員',r:'イン',ex:'会社員（かいしゃいん）／銀行員（ぎんこういん）／社員食堂（しゃいんしょくどう）で昼ご飯を食べる。',pt:'membro / funcionário'}
+ {k:'起',r:'お（きる）・お（こる）・お（こす）・キ',ex:'朝、6時に起（お）きます。',pt:'acordar / levantar-se'},
+ {k:'寝',r:'ね（る）・ね（かす）・シン',ex:'11時に寝（ね）ます。',pt:'dormir / deitar-se'},
+ {k:'浴',r:'あ（びる）・あ（びせる）・ヨク',ex:'シャワーを浴（あ）びます。',pt:'tomar banho / banhar-se'},
+ {k:'湯',r:'ゆ・トウ',ex:'お湯（ゆ）を入れます。',pt:'água quente'},
+ {k:'洗',r:'あら（う）・セン',ex:'手を洗（あら）います。',pt:'lavar'},
+ {k:'濯',r:'タク',ex:'洗濯（せんたく）をします。',pt:'lavagem de roupa'},
+ {k:'干',r:'ほ（す）・ひ（る）・カン',ex:'洗濯物を干（ほ）します。',pt:'secar / estender'},
+ {k:'活',r:'カツ',ex:'生活（せいかつ）',pt:'vida / atividade'},
+ {k:'拾',r:'ひろ（う）・シュウ',ex:'ごみを拾（ひろ）います。',pt:'pegar / recolher'},
+ {k:'捨',r:'す（てる）・シャ',ex:'ごみを捨（す）てます。',pt:'jogar fora'}
 ];
 const vg={}; data.forEach(x=>vg[x.k]=x.k.codePointAt(0).toString(16).padStart(5,'0')+'.svg');
 let idx=0,round=[],qi=0,answered=false;
@@ -49,21 +49,21 @@ const st=document.createElement('style');st.textContent='@keyframes draw{to{stro
 $('learnTab').onclick=()=>{$('learnTab').classList.add('active');$('practiceTab').classList.remove('active');grid.style.display='grid';$('learn').style.display='block';$('practice').style.display='none'};
 $('practiceTab').onclick=()=>{$('practiceTab').classList.add('active');$('learnTab').classList.remove('active');grid.style.display='none';$('learn').style.display='none';$('practice').style.display='block';startPractice()};
 const qs=[
- {q:'「つかえる」の「つか」は どのかんじですか？',pt:'servir',a:'仕'},
- {q:'「しょくば」の「しょく」は どのかんじですか？',pt:'local de trabalho',a:'職'},
- {q:'「もとめる」の「もと」は どのかんじですか？',pt:'procurar',a:'求'},
- {q:'「さがす」の「さが」は どのかんじですか？',pt:'procurar',a:'探'},
- {q:'「つね」のかんじは どれですか？',pt:'sempre',a:'常'},
- {q:'「じょうしき」の「しき」は どのかんじですか？',pt:'bom senso',a:'識'},
- {q:'「しっぱい」の「しっ」は どのかんじですか？',pt:'falha',a:'失'},
- {q:'「しつれい」の「れい」は どのかんじですか？',pt:'com licença',a:'礼'},
- {q:'「くろう」の「ろう」は どのかんじですか？',pt:'dificuldade',a:'労'},
- {q:'「しゃいん」の「いん」は どのかんじですか？',pt:'funcionário',a:'員'}
+ {q:'「おきる」の「お」は どのかんじですか？',pt:'acordar',a:'起'},
+ {q:'「ねる」の「ね」は どのかんじですか？',pt:'dormir',a:'寝'},
+ {q:'「あびる」の「あ」は どのかんじですか？',pt:'tomar banho',a:'浴'},
+ {q:'「おゆ」の「ゆ」は どのかんじですか？',pt:'água quente',a:'湯'},
+ {q:'「あらう」の「あら」は どのかんじですか？',pt:'lavar',a:'洗'},
+ {q:'「せんたく」の「たく」は どのかんじですか？',pt:'lavagem de roupa',a:'濯'},
+ {q:'「ほす」の「ほ」は どのかんじですか？',pt:'estender para secar',a:'干'},
+ {q:'「せいかつ」の「かつ」は どのかんじですか？',pt:'vida',a:'活'},
+ {q:'「ひろう」の「ひろ」は どのかんじですか？',pt:'recolher',a:'拾'},
+ {q:'「すてる」の「す」は どのかんじですか？',pt:'jogar fora',a:'捨'}
 ];
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
 function startPractice(){round=shuffle(qs);qi=0;showQ()}
 function showQ(){answered=false;$('next').disabled=true;$('feedback').textContent='';const q=round[qi];$('progress').textContent=`${qi+1} / ${round.length}`;$('q').innerHTML=q.q+`<div class="pt" style="font-size:14px;font-weight:400;margin-top:5px">${q.pt}</div>`;let opts=[q.a,...shuffle(data.filter(x=>x.k!==q.a).map(x=>x.k)).slice(0,3)];opts=shuffle(opts);$('choices').innerHTML='';opts.forEach(k=>{const b=document.createElement('button');b.className='choice';b.textContent=k;b.onclick=()=>{if(answered)return;answered=true;if(k===q.a){$('feedback').textContent='○ 正解！'}else{$('feedback').textContent='× 正解：'+q.a}$('next').disabled=false};$('choices').appendChild(b)})}
-$('next').onclick=()=>{qi++;if(qi>=round.length){$('q').textContent=round.length+'問 おわりました！';$('choices').innerHTML='';$('feedback').textContent='';$('next').textContent='もういちど';$('next').disabled=false;$('next').onclick=()=>{location.reload()};return}showQ()};
+$('next').onclick=()=>{qi++;if(qi>=round.length){$('q').textContent='10問 おわりました！';$('choices').innerHTML='';$('feedback').textContent='';$('next').textContent='もういちど';$('next').disabled=false;$('next').onclick=()=>{location.reload()};return}showQ()};
 const c=$('pad'),ctx=c.getContext('2d');ctx.lineWidth=10;ctx.lineCap='round';let down=false;function pos(e){const r=c.getBoundingClientRect(),p=e.touches?e.touches[0]:e;return[(p.clientX-r.left)*c.width/r.width,(p.clientY-r.top)*c.height/r.height]}c.onpointerdown=e=>{down=true;const [x,y]=pos(e);ctx.beginPath();ctx.moveTo(x,y)};c.onpointermove=e=>{if(!down)return;const[x,y]=pos(e);ctx.lineTo(x,y);ctx.stroke()};window.onpointerup=()=>down=false;$('clear').onclick=()=>ctx.clearRect(0,0,c.width,c.height);
 select(0);
 </script></body></html>
